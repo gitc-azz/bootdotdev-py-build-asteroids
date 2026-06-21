@@ -18,6 +18,9 @@ def main():
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
     shots = pygame.sprite.Group()
+    # Wherever a Shot is created it will be part of the shots, drawable and updatable
+    # meaning it will appear in the screen even if its a local variable
+    # see player::Player::shoot
     Shot.containers = (shots, drawable, updatable)
     
     player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
@@ -39,6 +42,13 @@ def main():
                 log_event("player_hit")
                 print("Game over!")
                 sys.exit()
+        for a in asteroids:
+            for s in shots:
+                if a.collide_with(s):
+                    log_event("asteroid_shot")
+                    a.split()
+                    s.kill()
+                    break
         for d in drawable:
             d.draw(screen)
         pygame.display.flip()
